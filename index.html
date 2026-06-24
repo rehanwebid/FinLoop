@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>FinLoop</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            background: #000000;
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+        }
+
+        .main-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .fixed-content {
+            flex-shrink: 0;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 24px 20px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow: visible;
+        }
+
+        .history-scrollable {
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 20px 20px 20px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .history-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-bottom: 8px;
+        }
+
+        .balance-section {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .balance-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .balance-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #888888;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .balance-amount {
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+            cursor: pointer;
+            transition: opacity 0.1s;
+        }
+
+        .balance-amount:active {
+            opacity: 0.7;
+        }
+
+        .level-badge {
+            font-size: 11px;
+            font-weight: 600;
+            color: #ffffff;
+            background: #1a1a1a;
+            border: 1px solid #333333;
+            padding: 6px 14px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            /* Tidak bisa disembunyikan, jadi tidak ada cursor: pointer atau efek aktif */
+        }
+
+        .chart-box {
+            width: 100%;
+            aspect-ratio: 17 / 9;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            background: #050505;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #chartCanvas {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+        }
+
+        .chart-periods {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            display: flex;
+            gap: 4px;
+            z-index: 5;
+        }
+
+        .period-btn {
+            font-family: 'Inter', sans-serif;
+            font-size: 9px;
+            font-weight: 500;
+            color: #666666;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            padding: 4px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: all 0.2s;
+        }
+
+        .period-btn.active {
+            background: #2a2a2a;
+            border-color: #444444;
+            color: #ffffff;
+        }
+
+        .input-nominal {
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            background: #111111;
+            border: 1px solid #2a2a2a;
+            padding: 16px 20px;
+            border-radius: 10px;
+            outline: none;
+            text-align: center;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+
+        .input-nominal::placeholder {
+            color: #444444;
+            font-weight: 400;
+        }
+
+        .input-nominal:focus {
+            border-color: #444444;
+            background: #181818;
+        }
+
+        .input-keterangan {
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #ffffff;
+            background: #111111;
+            border: 1px solid #2a2a2a;
+            padding: 12px 16px;
+            border-radius: 8px;
+            outline: none;
+            text-align: left;
+            letter-spacing: 0.3px;
+            transition: all 0.2s;
+        }
+
+        .input-keterangan::placeholder {
+            color: #444444;
+            font-weight: 400;
+            font-size: 12px;
+        }
+
+        .input-keterangan:focus {
+            border-color: #444444;
+            background: #181818;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-tarik {
+            flex: 1;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+            background: transparent;
+            border: 1px solid #333333;
+            padding: 14px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+
+        .btn-tarik:active {
+            background: #111111;
+            border-color: #555555;
+        }
+
+        .btn-tarik i {
+            font-size: 11px;
+        }
+
+        .btn-deposit {
+            flex: 1;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: #000000;
+            background: #ffffff;
+            border: none;
+            padding: 14px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+
+        .btn-deposit:active {
+            background: #d0d0d0;
+            transform: scale(0.98);
+        }
+
+        .btn-deposit i {
+            font-size: 11px;
+        }
+
+        .bottom-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 4px;
+        }
+
+        .history-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #777777;
+            letter-spacing: 0.5px;
+        }
+
+        .history-label i {
+            font-size: 13px;
+            color: #555555;
+        }
+
+        .limit-text {
+            font-size: 11px;
+            font-weight: 500;
+            color: #555555;
+            letter-spacing: 0.5px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0d0d0d;
+            border: 1px solid #1a1a1a;
+            padding: 12px 14px;
+            border-radius: 10px;
+            gap: 12px;
+        }
+
+        .history-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .history-icon-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .history-icon-circle.in {
+            background: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #333333;
+        }
+
+        .history-icon-circle.out {
+            background: #0f0f0f;
+            color: #777777;
+            border: 1px solid #1f1f1f;
+        }
+
+        .history-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .history-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .history-date {
+            font-size: 10px;
+            font-weight: 400;
+            color: #555555;
+            letter-spacing: 0.3px;
+        }
+
+        .history-amount {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            flex-shrink: 0;
+        }
+
+        .history-amount.in {
+            color: #ffffff;
+        }
+
+        .history-amount.out {
+            color: #777777;
+        }
+
+        .history-empty {
+            text-align: center;
+            color: #333333;
+            font-size: 12px;
+            padding: 24px 0;
+            font-weight: 500;
+        }
+
+        @media (min-width: 768px) {
+            .fixed-content {
+                padding: 32px 24px 16px 24px;
+                gap: 18px;
+            }
+            .balance-amount {
+                font-size: 30px;
+            }
+            .chart-box {
+                border-radius: 10px;
+            }
+            .input-nominal {
+                font-size: 20px;
+                padding: 18px 22px;
+            }
+            .input-keterangan {
+                font-size: 15px;
+                padding: 14px 18px;
+            }
+            .btn-tarik,
+            .btn-deposit {
+                font-size: 14px;
+                padding: 16px 20px;
+            }
+            .history-scrollable {
+                padding: 0 24px 24px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="fixed-content">
+            <div class="balance-section">
+                <div class="balance-info">
+                    <span class="balance-label">Total Saldo</span>
+                    <span class="balance-amount" id="balanceDisplay">Rp. 0</span>
+                </div>
+                <div class="level-badge" id="levelDisplay">Lv. 0</div>
+            </div>
+
+            <div class="chart-box">
+                <canvas id="chartCanvas"></canvas>
+                <div class="chart-periods">
+                    <button class="period-btn" data-period="week">Week</button>
+                    <button class="period-btn active" data-period="month">Month</button>
+                    <button class="period-btn" data-period="year">Year</button>
+                </div>
+            </div>
+
+            <input type="text" class="input-nominal" id="nominalInput" placeholder="Rp. 0" inputmode="numeric">
+            
+            <input type="text" class="input-keterangan" id="keteranganInput" placeholder="Keterangan (opsional)" maxlength="50">
+
+            <div class="action-row">
+                <button class="btn-tarik" id="btnTarik">
+                    <i class="fa-solid fa-arrow-down"></i> Tarik
+                </button>
+                <button class="btn-deposit" id="btnDeposit">
+                    <i class="fa-solid fa-arrow-up"></i> Deposit
+                </button>
+            </div>
+
+            <div class="bottom-info">
+                <div class="history-label">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>History</span>
+                </div>
+                <span class="limit-text" id="limitText">0/100</span>
+            </div>
+        </div>
+
+        <div class="history-scrollable">
+            <div class="history-section" id="historyList">
+                <div class="history-empty">Belum ada transaksi</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const STORAGE_KEY = 'fin_loop_data';
+            const MAX_TX = 100;
+            const defaultState = {
+                balance: 0,
+                level: 0,
+                period: 'month',
+                transactions: [],
+                dailyBalances: {},
+                isBalanceHidden: false
+            };
+            let state;
+
+            function load() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    state = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultState));
+                    if (!state.dailyBalances) state.dailyBalances = {};
+                    if (state.isBalanceHidden === undefined) state.isBalanceHidden = false;
+                    if (!state.transactions) state.transactions = [];
+                    if (state.level === undefined) state.level = levelFrom(state.balance);
+                } catch (e) {
+                    state = JSON.parse(JSON.stringify(defaultState));
+                }
+            }
+
+            function save() {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                } catch (e) {}
+            }
+
+            function levelFrom(b) {
+                return b < 1000000 ? 0 : Math.floor(b / 1000000);
+            }
+
+            function fmt(n) {
+                return 'Rp. ' + n.toLocaleString('id-ID');
+            }
+
+            function today() {
+                return new Date().toISOString().split('T')[0];
+            }
+
+            function now() {
+                const d = new Date();
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                const hours = String(d.getHours()).padStart(2, '0');
+                const minutes = String(d.getMinutes()).padStart(2, '0');
+                return `${year}-${month}-${day}, ${hours}:${minutes}`;
+            }
+
+            function addTx(type, amount, keterangan) {
+                if (state.transactions.length >= MAX_TX) {
+                    state.transactions.shift();
+                }
+
+                let txName;
+                if (keterangan && keterangan.trim() !== '') {
+                    txName = keterangan.trim();
+                } else {
+                    txName = type === 'in' ? 'Pemasukan' : 'Pengeluaran';
+                }
+
+                state.transactions.push({
+                    id: Date.now(),
+                    type,
+                    amount,
+                    date: now(),
+                    name: txName
+                });
+
+                state.balance += type === 'in' ? amount : -amount;
+                if (state.balance < 0) state.balance = 0;
+
+                state.level = levelFrom(state.balance);
+
+                state.dailyBalances[today()] = state.balance;
+
+                save();
+                refreshUI();
+                refreshChart();
+            }
+
+            function refreshBalanceDisplay() {
+                const balanceElement = document.getElementById('balanceDisplay');
+                if (state.isBalanceHidden) {
+                    balanceElement.textContent = 'Rp. •••';
+                } else {
+                    balanceElement.textContent = fmt(state.balance);
+                }
+            }
+
+            function refreshLevelDisplay() {
+                const levelElement = document.getElementById('levelDisplay');
+                // Level SELALU tampil, tidak bisa disembunyikan
+                levelElement.textContent = 'Lv. ' + state.level;
+            }
+
+            function setupDoubleTapBalance() {
+                const balanceElement = document.getElementById('balanceDisplay');
+                let lastTap = 0;
+                balanceElement.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const now = Date.now();
+                    if (now - lastTap < 300) {
+                        state.isBalanceHidden = !state.isBalanceHidden;
+                        save();
+                        refreshBalanceDisplay();
+                        lastTap = 0;
+                    } else {
+                        lastTap = now;
+                    }
+                });
+            }
+
+            // Fungsi setupDoubleTapLevel DIHAPUS - level tidak bisa di-toggle
+
+            function refreshUI() {
+                refreshBalanceDisplay();
+                refreshLevelDisplay();
+                document.getElementById('limitText').textContent = state.transactions.length + '/' + MAX_TX;
+                const inp = document.getElementById('nominalInput');
+                const ketInp = document.getElementById('keteranganInput');
+                if (inp) {
+                    inp.value = '';
+                    inp.placeholder = 'Rp. 0';
+                }
+                if (ketInp) {
+                    ketInp.value = '';
+                }
+                renderHistory();
+            }
+
+            function renderHistory() {
+                const el = document.getElementById('historyList');
+                if (!el) return;
+                if (!state.transactions.length) {
+                    el.innerHTML = '<div class="history-empty">Belum ada transaksi</div>';
+                    return;
+                }
+                el.innerHTML = [...state.transactions].reverse().map(tx => {
+                    const cls = tx.type === 'in' ? 'in' : 'out';
+                    const arrow = tx.type === 'in' ? 'fa-arrow-up' : 'fa-arrow-down';
+                    const pre = tx.type === 'in' ? '+' : '-';
+                    const amountStr = fmt(tx.amount);
+                    return `<div class="history-item">
+                        <div class="history-left">
+                            <div class="history-icon-circle ${cls}">
+                                <i class="fa-solid ${arrow}"></i>
+                            </div>
+                            <div class="history-info">
+                                <span class="history-name">${tx.name}</span>
+                                <span class="history-date">${tx.date}</span>
+                            </div>
+                        </div>
+                        <span class="history-amount ${cls}">${pre} ${amountStr}</span>
+                    </div>`;
+                }).join('');
+            }
+
+            let chart;
+
+            function refreshChart() {
+                const canvas = document.getElementById('chartCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const data = buildChartData(state.period);
+                if (chart) chart.destroy();
+                const g = ctx.createLinearGradient(0, 0, 0, 300);
+                g.addColorStop(0, 'rgba(255,255,255,0.18)');
+                g.addColorStop(0.4, 'rgba(255,255,255,0.05)');
+                g.addColorStop(1, 'rgba(255,255,255,0)');
+
+                const maxVal = Math.max(...data.values, 50000);
+                const minVal = Math.min(...data.values, 0);
+
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            data: data.values,
+                            borderColor: '#fff',
+                            backgroundColor: g,
+                            borderWidth: 1.6,
+                            tension: 0.35,
+                            pointRadius: (context) => {
+                                if (context.dataIndex === context.dataset.data.length - 1) return 3;
+                                return 0;
+                            },
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 250 },
+                        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                        scales: {
+                            x: { display: false, grid: { display: false }, ticks: { display: false }, border: { display: false } },
+                            y: { display: false, grid: { display: false }, ticks: { display: false }, border: { display: false },
+                                min: Math.max(0, minVal - 50000),
+                                max: maxVal + 50000
+                            }
+                        },
+                        layout: { padding: { top: 6, right: 6, bottom: 6, left: 6 } }
+                    }
+                });
+            }
+
+            function buildChartData(period) {
+                const db = state.dailyBalances || {};
+                const t = today();
+                const dates = Object.keys(db).sort();
+                let labels = [],
+                    vals = [];
+                const td = new Date(t);
+
+                if (period === 'week') {
+                    const s = new Date(td);
+                    s.setDate(s.getDate() - 6);
+                    for (let d = new Date(s); d <= td; d.setDate(d.getDate() + 1)) {
+                        const ds = d.toISOString().split('T')[0];
+                        labels.push(ds.slice(5));
+                        vals.push(db[ds] !== undefined ? db[ds] : null);
+                    }
+                } else if (period === 'month') {
+                    const s = new Date(td);
+                    s.setDate(s.getDate() - 29);
+                    for (let d = new Date(s); d <= td; d.setDate(d.getDate() + 1)) {
+                        const ds = d.toISOString().split('T')[0];
+                        labels.push(ds.slice(5));
+                        vals.push(db[ds] !== undefined ? db[ds] : null);
+                    }
+                } else {
+                    for (let i = 11; i >= 0; i--) {
+                        const d = new Date(td.getFullYear(), td.getMonth() - i, 1);
+                        const mk = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+                        const md = dates.filter(x => x.startsWith(mk));
+                        labels.push(mk.slice(5));
+                        vals.push(md.length ? db[md[md.length - 1]] : null);
+                    }
+                }
+
+                let last = 0;
+                for (let i = 0; i < vals.length; i++) {
+                    if (vals[i] === null || vals[i] === undefined) {
+                        vals[i] = last;
+                    } else {
+                        last = vals[i];
+                    }
+                }
+                return { labels, values: vals };
+            }
+
+            const inp = document.getElementById('nominalInput');
+            if (inp) {
+                inp.addEventListener('focus', () => {
+                    if (inp.value === '' || inp.value === 'Rp. 0') inp.value = '';
+                });
+                inp.addEventListener('blur', () => {
+                    if (inp.value.replace(/[^0-9]/g, '') === '') inp.value = '';
+                });
+                inp.addEventListener('input', () => {
+                    let r = inp.value.replace(/[^0-9]/g, '');
+                    if (!r) { inp.value = ''; return; }
+                    r = r.replace(/^0+/, '') || '0';
+                    inp.value = 'Rp. ' + parseInt(r).toLocaleString('id-ID');
+                });
+                inp.addEventListener('keydown', e => {
+                    const ok = [8, 46, 9, 27, 13, 37, 38, 39, 40];
+                    if (ok.includes(e.keyCode)) return;
+                    if ((e.ctrlKey || e.metaKey) && [65, 67, 86, 88].includes(e.keyCode)) return;
+                    if ((e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105)) e.preventDefault();
+                });
+                inp.addEventListener('paste', e => {
+                    e.preventDefault();
+                    const r = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+                    if (r) inp.value = 'Rp. ' + parseInt(r.replace(/^0+/, '') || '0').toLocaleString('id-ID');
+                });
+            }
+
+            function getAmount() {
+                if (!inp) return 0;
+                const r = inp.value.replace(/[^0-9]/g, '');
+                return parseInt(r) || 0;
+            }
+
+            function getKeterangan() {
+                const ketInp = document.getElementById('keteranganInput');
+                if (!ketInp) return '';
+                return ketInp.value.trim();
+            }
+
+            function resetInput() {
+                if (inp) {
+                    inp.value = '';
+                    inp.placeholder = 'Rp. 0';
+                }
+                const ketInp = document.getElementById('keteranganInput');
+                if (ketInp) {
+                    ketInp.value = '';
+                }
+            }
+
+            const btnDeposit = document.getElementById('btnDeposit');
+            const btnTarik = document.getElementById('btnTarik');
+
+            if (btnDeposit) {
+                btnDeposit.addEventListener('click', () => {
+                    const a = getAmount();
+                    if (!a || a <= 0) { resetInput(); return; }
+                    const keterangan = getKeterangan();
+                    addTx('in', a, keterangan);
+                });
+            }
+
+            if (btnTarik) {
+                btnTarik.addEventListener('click', () => {
+                    const a = getAmount();
+                    if (!a || a <= 0 || a > state.balance) { resetInput(); return; }
+                    const keterangan = getKeterangan();
+                    addTx('out', a, keterangan);
+                });
+            }
+
+            const periodBtns = document.querySelectorAll('.period-btn');
+            periodBtns.forEach(b => {
+                b.addEventListener('click', () => {
+                    periodBtns.forEach(x => x.classList.remove('active'));
+                    b.classList.add('active');
+                    state.period = b.dataset.period;
+                    save();
+                    refreshChart();
+                });
+            });
+
+            load();
+            refreshUI();
+            refreshChart();
+
+            setupDoubleTapBalance();
+            // setupDoubleTapLevel DIHAPUS - level tidak bisa disembunyikan
+
+            periodBtns.forEach(b => {
+                if (b.dataset.period === state.period) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+        })();
+    </script>
+</body>
+</html>
