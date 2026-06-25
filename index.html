@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -25,7 +26,7 @@
             width: 100vw;
             height: 100vh;
             height: 100dvh;
-            background: #000000;
+            background: #050505; /* Hitam sedikit lebih dalam */
             font-family: 'Inter', sans-serif;
             color: #ffffff;
             position: fixed;
@@ -34,42 +35,309 @@
             overflow: hidden;
         }
 
-        .main-container {
+        /* ========== SPLASH SCREEN ========== */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
+            background: #050505;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .splash-image {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            display: block;
+            margin-bottom: 40px;
+            filter: contrast(1.1) brightness(0.9); /* Warna gambar sedikit disesuaikan */
+        }
+
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            position: absolute;
+            bottom: 48px;
+            left: 0;
+            right: 0;
+        }
+
+        .balls-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            position: relative;
+            width: 28px;
+            height: 10px;
+        }
+
+        .ball {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            position: absolute;
+            top: 1px;
+        }
+
+        .ball-white {
+            background: #ffffff; /* Putih cerah */
+            left: 0;
+            animation: ballWhiteBounce 0.6s ease-in-out infinite alternate;
+        }
+
+        .ball-gray {
+            background: #666666; /* Abu metalik */
+            right: 0;
+            animation: ballGrayBounce 0.6s ease-in-out infinite alternate;
+        }
+
+        @keyframes ballWhiteBounce {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(20px); }
+        }
+
+        @keyframes ballGrayBounce {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-20px); }
+        }
+
+        .loading-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            color: #999999; /* Abu terang */
+            letter-spacing: 1px;
+        }
+
+        /* ========== PIN SCREEN ========== */
+        .pin-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            z-index: 900;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            padding: 0;
+        }
+
+        .pin-screen.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .pin-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .pin-top {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 0 24px;
+            flex-shrink: 0;
+            margin-bottom: 40px;
+        }
+
+        .pin-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+            text-align: center;
+            letter-spacing: -0.3px;
+        }
+
+        .pin-subtitle {
+            font-size: 13px;
+            font-weight: 400;
+            color: #777777; /* Abu-abu muda */
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .pin-spacer-top {
+            flex: 1;
+        }
+
+        .pin-middle {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 0 24px;
+            flex-shrink: 0;
+            margin-bottom: 32px;
+        }
+
+        .pin-dots {
+            display: flex;
+            gap: 18px;
+        }
+
+        .pin-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #333333; /* Border abu gelap */
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+
+        .pin-dot.filled {
+            background: #ffffff; /* Putih cerah saat terisi */
+            border-color: #ffffff;
+        }
+
+        .pin-dot.error {
+            background: #ff4444;
+            border-color: #ff4444;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-4px); }
+        }
+
+        .pin-error {
+            font-size: 12px;
+            font-weight: 500;
+            color: #ff4444;
+            text-align: center;
+            min-height: 18px;
+        }
+
+        .pin-spacer-bottom {
+            flex: 1;
+        }
+
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            width: 100%;
+            padding: 0 16px 24px 16px;
+            flex-shrink: 0;
+        }
+
+        .numpad-btn {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            font-weight: 500;
+            color: #e0e0e0; /* Abu cerah metalik */
+            background: #0d0d0d; /* Latar gelap */
+            border: 1px solid #222222; /* Border abu gelap */
+            padding: 14px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .numpad-btn:active {
+            background: #1a1a1a; /* Sedikit lebih terang saat ditekan */
+            border-color: #444444;
+            transform: scale(0.97);
+        }
+
+        .numpad-lock {
+            font-size: 18px;
+            color: #555555;
+            background: #070707;
+            border: 1px solid #1a1a1a;
+            padding: 14px 0;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .numpad-delete {
+            font-size: 18px;
+            color: #888888;
+            background: #0d0d0d;
+            border: 1px solid #222222;
+            padding: 14px 0;
+        }
+
+        .numpad-delete:active {
+            background: #1a1a1a;
+            border-color: #444444;
+            color: #ffffff;
+            transform: scale(0.97);
+        }
+
+        /* ========== MAIN SCREEN ========== */
+        .main-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+            z-index: 800;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-screen.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .main-container {
+            width: 100%;
+            flex: 1;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-        }
-
-        .fixed-content {
-            flex-shrink: 0;
-            width: 100%;
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 24px 20px 16px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            overflow: visible;
-        }
-
-        .history-scrollable {
-            flex: 1;
             min-height: 0;
+        }
+
+        .scrollable-content {
+            flex: 1;
             width: 100%;
             max-width: 480px;
             margin: 0 auto;
-            padding: 0 20px 20px 20px;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            padding: 24px 20px 16px 20px;
         }
 
-        .history-section {
+        .fixed-content-inner {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            padding-bottom: 8px;
+            gap: 10px;
         }
 
         .balance-section {
@@ -87,44 +355,59 @@
         .balance-label {
             font-size: 11px;
             font-weight: 500;
-            color: #888888;
+            color: #888888; /* Abu-abu metalik */
             letter-spacing: 1px;
             text-transform: uppercase;
+        }
+
+        .balance-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .balance-amount {
             font-size: 26px;
             font-weight: 800;
-            color: #ffffff;
+            color: #ffffff; /* Putih cerah */
             letter-spacing: -0.5px;
             line-height: 1.1;
+        }
+
+        .eye-toggle {
+            font-size: 18px;
+            color: #666666;
             cursor: pointer;
-            transition: opacity 0.1s;
+            transition: color 0.2s;
+            padding: 4px;
         }
 
-        .balance-amount:active {
-            opacity: 0.7;
-        }
-
-        .level-badge {
-            font-size: 11px;
-            font-weight: 600;
+        .eye-toggle:active {
             color: #ffffff;
-            background: #1a1a1a;
-            border: 1px solid #333333;
-            padding: 6px 14px;
+        }
+
+        .hamburger-btn {
+            font-size: 20px;
+            color: #b0b0b0; /* Abu metalik terang */
+            background: #0d0d0d;
+            border: 1px solid #2a2a2a; /* Border abu gelap */
+            padding: 8px 12px;
             border-radius: 6px;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-            /* Tidak bisa disembunyikan, jadi tidak ada cursor: pointer atau efek aktif */
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            opacity: 0.5;
         }
 
         .chart-box {
             width: 100%;
             aspect-ratio: 17 / 9;
-            border: 1px solid #2a2a2a;
+            border: 1px solid #2a2a2a; /* Border abu gelap */
             border-radius: 8px;
-            background: #050505;
+            background: #080808; /* Latar lebih gelap */
             overflow: hidden;
             position: relative;
         }
@@ -149,8 +432,8 @@
             font-size: 9px;
             font-weight: 500;
             color: #666666;
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
+            background: #111111;
+            border: 1px solid #222222;
             padding: 4px 10px;
             border-radius: 20px;
             cursor: pointer;
@@ -159,20 +442,422 @@
         }
 
         .period-btn.active {
-            background: #2a2a2a;
-            border-color: #444444;
+            background: #333333; /* Abu gelap aktif */
+            border-color: #555555;
+            color: #ffffff; /* Putih cerah */
+        }
+
+        .chart-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0 4px;
+        }
+
+        .chart-footer-text {
+            font-size: 10px;
+            font-weight: 400;
+            color: #444444;
+            letter-spacing: 0.3px;
+        }
+
+        /* Row: diagram bulat + persegi panjang */
+        .donut-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 2px 4px;
+        }
+
+        .donut-outline {
+            position: relative;
+            width: 56px;
+            height: 56px;
+            flex-shrink: 0;
+        }
+
+        .donut-outline svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .donut-bg {
+            fill: none;
+            stroke: #1a1a1a; /* Lingkaran latar abu gelap */
+            stroke-width: 5;
+        }
+
+        .donut-white {
+            fill: none;
+            stroke: #ffffff; /* Putih cerah untuk pemasukan */
+            stroke-width: 5;
+            stroke-linecap: butt;
+            transition: stroke-dashoffset 0.6s ease, stroke-dasharray 0.6s ease;
+        }
+
+        .donut-gray {
+            fill: none;
+            stroke: #888888; /* Abu metalik untuk pengeluaran */
+            stroke-width: 5;
+            stroke-linecap: butt;
+            transition: stroke-dashoffset 0.6s ease, stroke-dasharray 0.6s ease;
+        }
+
+        .donut-center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            white-space: nowrap;
+        }
+
+        .donut-center-text.up {
             color: #ffffff;
         }
 
-        .input-nominal {
+        .donut-center-text.down {
+            color: #888888;
+        }
+
+        .donut-center-text.neutral {
+            color: #555555;
+        }
+
+        .bars-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .bar-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 28px;
+            border: 1px solid #2a2a2a; /* Border abu gelap */
+            border-radius: 4px;
+            padding: 0 10px;
+            gap: 8px;
+        }
+
+        .bar-item-label {
+            font-size: 10px;
+            font-weight: 500;
+            color: #666666;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .bar-item-amount {
+            font-size: 10px;
+            font-weight: 500;
+            color: #999999; /* Abu terang metalik */
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .legend-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 0 4px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-checkbox {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .legend-checkbox.income {
+            background: #ffffff; /* Putih cerah */
+        }
+
+        .legend-checkbox.expense {
+            background: #2a2a2a; /* Abu gelap */
+        }
+
+        .legend-text {
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+
+        .legend-text.income {
+            color: #ffffff;
+        }
+
+        .legend-text.expense {
+            color: #555555;
+        }
+
+        /* ========== HEATMAP ========== */
+        .heatmap-container {
+            padding: 4px 4px 8px 4px;
+        }
+
+        .heatmap-title {
+            font-size: 10px;
+            font-weight: 500;
+            color: #555555;
+            letter-spacing: 0.3px;
+            margin-bottom: 8px;
+        }
+
+        .heatmap-grid {
+            display: flex;
+            gap: 3px;
+            flex-wrap: wrap;
+        }
+
+        .heatmap-cell {
+            width: 14px;
+            height: 14px;
+            border-radius: 2px;
+            background: #111111; /* Latar gelap */
+            transition: background 0.3s ease;
+        }
+
+        /* Gradasi aktivitas dari gelap ke putih cerah (sesuai logo) */
+        .heatmap-cell.level-1 {
+            background: #2a2a2a;
+        }
+
+        .heatmap-cell.level-2 {
+            background: #555555;
+        }
+
+        .heatmap-cell.level-3 {
+            background: #888888;
+        }
+
+        .heatmap-cell.level-4 {
+            background: #ffffff;
+        }
+
+        .heatmap-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4px;
+        }
+
+        .heatmap-label-text {
+            font-size: 8px;
+            font-weight: 400;
+            color: #444444;
+        }
+
+        .heatmap-legend {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 6px;
+        }
+
+        .heatmap-legend-colors {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .heatmap-legend-cell {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .heatmap-legend-cell.lv-0 {
+            background: #111111;
+        }
+
+        .heatmap-legend-cell.lv-1 {
+            background: #2a2a2a;
+        }
+
+        .heatmap-legend-cell.lv-2 {
+            background: #555555;
+        }
+
+        .heatmap-legend-cell.lv-3 {
+            background: #888888;
+        }
+
+        .heatmap-legend-cell.lv-4 {
+            background: #ffffff;
+        }
+
+        .heatmap-legend-text {
+            font-size: 8px;
+            font-weight: 400;
+            color: #444444;
+        }
+
+        /* ========== TOP TRANSACTIONS ========== */
+        .top-transactions {
+            padding: 4px 4px 8px 4px;
+        }
+
+        .top-transactions-title {
+            font-size: 10px;
+            font-weight: 500;
+            color: #555555;
+            letter-spacing: 0.3px;
+            margin-bottom: 8px;
+        }
+
+        .top-transactions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .top-tx-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 28px;
+            border: 1px solid #1a1a1a; /* Border gelap */
+            border-radius: 4px;
+            padding: 0 10px;
+            gap: 8px;
+            background: #080808;
+        }
+
+        .top-tx-left {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .top-tx-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            flex-shrink: 0;
+        }
+
+        .top-tx-icon.in {
+            background: #1a1a1a; /* Latar abu gelap */
+            color: #ffffff; /* Ikon putih */
+            border: 1px solid #333333; /* Border abu */
+        }
+
+        .top-tx-icon.out {
+            background: #0f0f0f;
+            color: #888888; /* Ikon abu metalik */
+            border: 1px solid #1f1f1f;
+        }
+
+        .top-tx-name {
+            font-size: 10px;
+            font-weight: 500;
+            color: #888888; /* Abu metalik */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .top-tx-amount {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            flex-shrink: 0;
+        }
+
+        .top-tx-amount.in {
+            color: #ffffff; /* Putih cerah */
+        }
+
+        .top-tx-amount.out {
+            color: #666666; /* Abu gelap */
+        }
+
+        .top-tx-empty {
+            font-size: 10px;
+            font-weight: 400;
+            color: #333333;
+            text-align: center;
+            padding: 8px 0;
+        }
+
+        /* Teks pengembangan */
+        .development-note {
+            text-align: center;
+            padding: 8px 4px 4px 4px;
+        }
+
+        .development-note-text {
+            font-size: 9px;
+            font-weight: 400;
+            color: #333333; /* Abu gelap */
+            letter-spacing: 0.2px;
+        }
+
+        /* ========== POP-UP TRANSAKSI ========== */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85); /* Latar overlay lebih gelap */
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 950;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 24px;
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup-card {
+            width: 100%;
+            max-width: 340px;
+            background: #0d0d0d; /* Latar popup gelap */
+            border: 1px solid #2a2a2a; /* Border abu gelap */
+            border-radius: 16px;
+            padding: 24px 20px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .popup-input {
             width: 100%;
             font-family: 'Inter', sans-serif;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
             color: #ffffff;
-            background: #111111;
+            background: #0a0a0a; /* Latar input gelap */
             border: 1px solid #2a2a2a;
-            padding: 16px 20px;
+            padding: 14px 16px;
             border-radius: 10px;
             outline: none;
             text-align: center;
@@ -180,25 +865,25 @@
             transition: all 0.2s;
         }
 
-        .input-nominal::placeholder {
+        .popup-input::placeholder {
             color: #444444;
             font-weight: 400;
         }
 
-        .input-nominal:focus {
-            border-color: #444444;
-            background: #181818;
+        .popup-input:focus {
+            border-color: #666666; /* Border lebih terang saat fokus */
+            background: #111111;
         }
 
-        .input-keterangan {
+        .popup-keterangan {
             width: 100%;
             font-family: 'Inter', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             color: #ffffff;
-            background: #111111;
+            background: #0a0a0a;
             border: 1px solid #2a2a2a;
-            padding: 12px 16px;
+            padding: 12px 14px;
             border-radius: 8px;
             outline: none;
             text-align: left;
@@ -206,199 +891,154 @@
             transition: all 0.2s;
         }
 
-        .input-keterangan::placeholder {
+        .popup-keterangan::placeholder {
             color: #444444;
             font-weight: 400;
-            font-size: 12px;
+            font-size: 11px;
         }
 
-        .input-keterangan:focus {
-            border-color: #444444;
-            background: #181818;
+        .popup-keterangan:focus {
+            border-color: #666666;
+            background: #111111;
         }
 
-        .action-row {
+        .popup-actions {
             display: flex;
             gap: 10px;
         }
 
-        .btn-tarik {
+        .popup-btn {
             flex: 1;
             font-family: 'Inter', sans-serif;
             font-size: 13px;
             font-weight: 600;
-            color: #ffffff;
-            background: transparent;
-            border: 1px solid #333333;
-            padding: 14px 18px;
+            padding: 13px 16px;
             border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             letter-spacing: 0.5px;
             transition: all 0.2s;
+            border: none;
         }
 
-        .btn-tarik:active {
+        .popup-btn-expense {
+            background: transparent;
+            color: #888888; /* Abu metalik */
+            border: 1px solid #333333;
+        }
+
+        .popup-btn-expense:active {
             background: #111111;
             border-color: #555555;
-        }
-
-        .btn-tarik i {
-            font-size: 11px;
-        }
-
-        .btn-deposit {
-            flex: 1;
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            font-weight: 600;
-            color: #000000;
-            background: #ffffff;
-            border: none;
-            padding: 14px 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            letter-spacing: 0.5px;
-            transition: all 0.2s;
-        }
-
-        .btn-deposit:active {
-            background: #d0d0d0;
-            transform: scale(0.98);
-        }
-
-        .btn-deposit i {
-            font-size: 11px;
-        }
-
-        .bottom-info {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-top: 4px;
-        }
-
-        .history-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            font-weight: 500;
-            color: #777777;
-            letter-spacing: 0.5px;
-        }
-
-        .history-label i {
-            font-size: 13px;
-            color: #555555;
-        }
-
-        .limit-text {
-            font-size: 11px;
-            font-weight: 500;
-            color: #555555;
-            letter-spacing: 0.5px;
-        }
-
-        .history-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #0d0d0d;
-            border: 1px solid #1a1a1a;
-            padding: 12px 14px;
-            border-radius: 10px;
-            gap: 12px;
-        }
-
-        .history-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 0;
-            flex: 1;
-        }
-
-        .history-icon-circle {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            flex-shrink: 0;
-        }
-
-        .history-icon-circle.in {
-            background: #1a1a1a;
             color: #ffffff;
-            border: 1px solid #333333;
         }
 
-        .history-icon-circle.out {
-            background: #0f0f0f;
-            color: #777777;
-            border: 1px solid #1f1f1f;
+        .popup-btn-income {
+            background: #ffffff; /* Putih cerah */
+            color: #000000; /* Teks hitam */
         }
 
-        .history-info {
+        .popup-btn-income:active {
+            background: #d0d0d0;
+            transform: scale(0.97);
+        }
+
+        /* ========== BOTTOM NAVBAR ========== */
+        .bottom-navbar {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 6px 4px;
+            padding-bottom: max(6px, env(safe-area-inset-bottom, 6px));
+            background: #0a0a0a; /* Latar navbar lebih gelap */
+            border-top: 1px solid #1a1a1a; /* Border abu gelap */
+            flex-shrink: 0;
+            z-index: 10;
+            position: relative;
+        }
+
+        .nav-item {
             display: flex;
             flex-direction: column;
-            gap: 2px;
-            min-width: 0;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            min-width: 48px;
         }
 
-        .history-name {
-            font-size: 13px;
+        .nav-item:active {
+            background: #111111;
+        }
+
+        .nav-item i {
+            font-size: 16px;
+            color: #555555; /* Abu gelap */
+            transition: color 0.2s;
+        }
+
+        .nav-item span {
+            font-size: 9px;
             font-weight: 500;
-            color: #ffffff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .history-date {
-            font-size: 10px;
-            font-weight: 400;
             color: #555555;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
+            transition: color 0.2s;
         }
 
-        .history-amount {
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            flex-shrink: 0;
+        .nav-item.active i {
+            color: #ffffff; /* Putih cerah saat aktif */
         }
 
-        .history-amount.in {
+        .nav-item.active span {
             color: #ffffff;
         }
 
-        .history-amount.out {
-            color: #777777;
+        .nav-item.nav-add {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffffff; /* Putih cerah */
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 12px rgba(255,255,255,0.15); /* Cahaya putih lembut */
+            gap: 0;
         }
 
-        .history-empty {
-            text-align: center;
-            color: #333333;
-            font-size: 12px;
-            padding: 24px 0;
-            font-weight: 500;
+        .nav-item.nav-add:active {
+            background: #d0d0d0;
+            transform: translateX(-50%) scale(0.92);
+        }
+
+        .nav-item.nav-add i {
+            font-size: 22px;
+            color: #000000; /* Hitam kontras */
+        }
+
+        .nav-item.nav-add span {
+            display: none;
         }
 
         @media (min-width: 768px) {
-            .fixed-content {
+            .scrollable-content {
                 padding: 32px 24px 16px 24px;
-                gap: 18px;
+            }
+            .fixed-content-inner {
+                gap: 12px;
             }
             .balance-amount {
                 font-size: 30px;
@@ -406,430 +1046,907 @@
             .chart-box {
                 border-radius: 10px;
             }
-            .input-nominal {
+            .eye-toggle {
                 font-size: 20px;
-                padding: 18px 22px;
             }
-            .input-keterangan {
-                font-size: 15px;
-                padding: 14px 18px;
+            .chart-footer-text {
+                font-size: 11px;
             }
-            .btn-tarik,
-            .btn-deposit {
+            .donut-outline {
+                width: 62px;
+                height: 62px;
+            }
+            .donut-center-text {
+                font-size: 10px;
+            }
+            .bar-item {
+                height: 30px;
+            }
+            .bar-item-label {
+                font-size: 11px;
+            }
+            .bar-item-amount {
+                font-size: 11px;
+            }
+            .legend-checkbox {
+                width: 11px;
+                height: 11px;
+            }
+            .legend-text {
+                font-size: 10px;
+            }
+            .heatmap-cell {
+                width: 16px;
+                height: 16px;
+            }
+            .heatmap-title {
+                font-size: 11px;
+            }
+            .heatmap-legend-cell {
+                width: 14px;
+                height: 14px;
+            }
+            .heatmap-legend-text {
+                font-size: 9px;
+            }
+            .top-transactions-title {
+                font-size: 11px;
+            }
+            .top-tx-item {
+                height: 30px;
+            }
+            .top-tx-name {
+                font-size: 11px;
+            }
+            .top-tx-amount {
+                font-size: 11px;
+            }
+            .development-note-text {
+                font-size: 10px;
+            }
+            .popup-input {
+                font-size: 22px;
+                padding: 16px 18px;
+            }
+            .popup-btn {
                 font-size: 14px;
-                padding: 16px 20px;
+                padding: 15px 18px;
             }
-            .history-scrollable {
-                padding: 0 24px 24px 24px;
+            .nav-item i {
+                font-size: 18px;
+            }
+            .nav-item span {
+                font-size: 10px;
+            }
+            .nav-item.nav-add {
+                width: 48px;
+                height: 48px;
+                min-width: 48px;
+                top: -22px;
+            }
+            .nav-item.nav-add i {
+                font-size: 24px;
             }
         }
     </style>
 </head>
 <body>
-
-    <div class="main-container">
-        <div class="fixed-content">
-            <div class="balance-section">
-                <div class="balance-info">
-                    <span class="balance-label">Total Saldo</span>
-                    <span class="balance-amount" id="balanceDisplay">Rp. 0</span>
-                </div>
-                <div class="level-badge" id="levelDisplay">Lv. 0</div>
+    <!-- ==================== SPLASH SCREEN ==================== -->
+    <div class="splash-screen" id="splashScreen">
+        <img 
+            class="splash-image" 
+            src="FinLoop.webp" 
+            alt="FinLoop Illustration"
+            onerror="this.style.display='none';"
+        >
+        <div class="loading-container">
+            <div class="balls-wrapper">
+                <div class="ball ball-white"></div>
+                <div class="ball ball-gray"></div>
             </div>
+            <span class="loading-text">Loading...</span>
+        </div>
+    </div>
 
-            <div class="chart-box">
-                <canvas id="chartCanvas"></canvas>
-                <div class="chart-periods">
-                    <button class="period-btn" data-period="week">Week</button>
-                    <button class="period-btn active" data-period="month">Month</button>
-                    <button class="period-btn" data-period="year">Year</button>
-                </div>
+    <!-- ==================== PIN SCREEN ==================== -->
+    <div class="pin-screen" id="pinScreen">
+        <div class="pin-spacer-top"></div>
+
+        <div class="pin-top">
+            <div class="pin-title" id="pinTitle">Buat PIN Baru</div>
+            <div class="pin-subtitle" id="pinSubtitle">Masukkan PIN 6 digit, dan pastikan ingat.</div>
+        </div>
+
+        <div class="pin-middle">
+            <div class="pin-dots" id="pinDots">
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
             </div>
+            <div class="pin-error" id="pinError"></div>
+        </div>
 
-            <input type="text" class="input-nominal" id="nominalInput" placeholder="Rp. 0" inputmode="numeric">
-            
-            <input type="text" class="input-keterangan" id="keteranganInput" placeholder="Keterangan (opsional)" maxlength="50">
+        <div class="pin-spacer-bottom"></div>
 
-            <div class="action-row">
-                <button class="btn-tarik" id="btnTarik">
-                    <i class="fa-solid fa-arrow-down"></i> Tarik
-                </button>
-                <button class="btn-deposit" id="btnDeposit">
-                    <i class="fa-solid fa-arrow-up"></i> Deposit
-                </button>
-            </div>
+        <div class="numpad" id="numpad">
+            <button class="numpad-btn" data-key="1">1</button>
+            <button class="numpad-btn" data-key="2">2</button>
+            <button class="numpad-btn" data-key="3">3</button>
+            <button class="numpad-btn" data-key="4">4</button>
+            <button class="numpad-btn" data-key="5">5</button>
+            <button class="numpad-btn" data-key="6">6</button>
+            <button class="numpad-btn" data-key="7">7</button>
+            <button class="numpad-btn" data-key="8">8</button>
+            <button class="numpad-btn" data-key="9">9</button>
+            <button class="numpad-btn numpad-lock">
+                <i class="fa-solid fa-lock"></i>
+            </button>
+            <button class="numpad-btn" data-key="0">0</button>
+            <button class="numpad-btn numpad-delete" data-key="delete">
+                <i class="fa-solid fa-delete-left"></i>
+            </button>
+        </div>
+    </div>
 
-            <div class="bottom-info">
-                <div class="history-label">
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-                    <span>History</span>
+    <!-- ==================== MAIN SCREEN ==================== -->
+    <div class="main-screen" id="mainScreen">
+        <div class="main-container">
+            <div class="scrollable-content" id="scrollableContent">
+                <div class="fixed-content-inner">
+                    <div class="balance-section">
+                        <div class="balance-info">
+                            <span class="balance-label">Total Saldo</span>
+                            <div class="balance-row">
+                                <span class="balance-amount" id="balanceDisplay">Rp. 0</span>
+                                <span class="eye-toggle" id="eyeToggle">
+                                    <i class="fa-solid fa-eye"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <button class="hamburger-btn" id="hamburgerBtn">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                    </div>
+
+                    <div class="chart-box">
+                        <canvas id="chartCanvas"></canvas>
+                        <div class="chart-periods">
+                            <button class="period-btn" data-period="week">Week</button>
+                            <button class="period-btn active" data-period="month">Month</button>
+                            <button class="period-btn" data-period="year">Year</button>
+                        </div>
+                    </div>
+
+                    <div class="chart-footer">
+                        <span class="chart-footer-text">Pembulatan grafik</span>
+                    </div>
+
+                    <div class="donut-row">
+                        <div class="donut-outline">
+                            <svg viewBox="0 0 100 100">
+                                <circle class="donut-bg" cx="50" cy="50" r="42"/>
+                                <circle class="donut-white" id="donutWhite" cx="50" cy="50" r="42"
+                                    stroke-dasharray="0 263.89"
+                                    stroke-dashoffset="0"/>
+                                <circle class="donut-gray" id="donutGray" cx="50" cy="50" r="42"
+                                    stroke-dasharray="0 263.89"
+                                    stroke-dashoffset="0"/>
+                            </svg>
+                            <div class="donut-center-text neutral" id="donutText">0%</div>
+                        </div>
+
+                        <div class="bars-container">
+                            <div class="bar-item">
+                                <span class="bar-item-label">Pemasukan :</span>
+                                <span class="bar-item-amount" id="totalIncome">Rp. 0</span>
+                            </div>
+                            <div class="bar-item">
+                                <span class="bar-item-label">Pengeluaran :</span>
+                                <span class="bar-item-amount" id="totalExpense">Rp. 0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="legend-container">
+                        <div class="legend-item">
+                            <div class="legend-checkbox income"></div>
+                            <span class="legend-text income">Pemasukan</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-checkbox expense"></div>
+                            <span class="legend-text expense">Pengeluaran</span>
+                        </div>
+                    </div>
+
+                    <!-- Heatmap -->
+                    <div class="heatmap-container">
+                        <div class="heatmap-title">Pelacakan Keaktifan</div>
+                        <div class="heatmap-grid" id="heatmapGrid"></div>
+                        <div class="heatmap-labels">
+                            <span class="heatmap-label-text">30 hari</span>
+                            <span class="heatmap-label-text">Hari ini</span>
+                        </div>
+                        <div class="heatmap-legend">
+                            <span class="heatmap-legend-text">Tidak</span>
+                            <div class="heatmap-legend-colors">
+                                <div class="heatmap-legend-cell lv-0"></div>
+                                <div class="heatmap-legend-cell lv-1"></div>
+                                <div class="heatmap-legend-cell lv-2"></div>
+                                <div class="heatmap-legend-cell lv-3"></div>
+                                <div class="heatmap-legend-cell lv-4"></div>
+                            </div>
+                            <span class="heatmap-legend-text">Aktif</span>
+                        </div>
+                    </div>
+
+                    <!-- Top Transactions -->
+                    <div class="top-transactions">
+                        <div class="top-transactions-title">Transaksi terbesar bulan ini</div>
+                        <div class="top-transactions-list" id="topTransactionsList">
+                            <div class="top-tx-empty">Belum ada transaksi</div>
+                        </div>
+                    </div>
+
+                    <!-- Development Note -->
+                    <div class="development-note">
+                        <span class="development-note-text">Fitur lainnya masih dalam pengembangan</span>
+                    </div>
                 </div>
-                <span class="limit-text" id="limitText">0/100</span>
             </div>
         </div>
 
-        <div class="history-scrollable">
-            <div class="history-section" id="historyList">
-                <div class="history-empty">Belum ada transaksi</div>
+        <!-- Bottom Navbar -->
+        <nav class="bottom-navbar" id="bottomNav">
+            <div class="nav-item active" data-nav="home">
+                <i class="fa-solid fa-house"></i>
+                <span>Beranda</span>
+            </div>
+            <div class="nav-item" data-nav="stats">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Statistik</span>
+            </div>
+            <div style="width: 44px; min-width: 44px;"></div>
+            <div class="nav-item" data-nav="target">
+                <i class="fa-solid fa-bullseye"></i>
+                <span>Target</span>
+            </div>
+            <div class="nav-item" data-nav="profile">
+                <i class="fa-solid fa-user"></i>
+                <span>Profil</span>
+            </div>
+
+            <div class="nav-item nav-add" data-nav="add">
+                <i class="fa-solid fa-plus"></i>
+            </div>
+        </nav>
+    </div>
+
+    <!-- ==================== POP-UP TRANSAKSI ==================== -->
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-card">
+            <input type="text" class="popup-input" id="popupNominal" placeholder="Rp. 0" inputmode="numeric">
+            <input type="text" class="popup-keterangan" id="popupKeterangan" placeholder="Keterangan (opsional)" maxlength="50">
+            <div class="popup-actions">
+                <button class="popup-btn popup-btn-expense" id="popupExpense">
+                    <i class="fa-solid fa-arrow-down"></i> Pengeluaran
+                </button>
+                <button class="popup-btn popup-btn-income" id="popupIncome">
+                    <i class="fa-solid fa-arrow-up"></i> Pemasukan
+                </button>
             </div>
         </div>
     </div>
 
     <script>
         (function() {
-            const STORAGE_KEY = 'fin_loop_data';
-            const MAX_TX = 100;
-            const defaultState = {
-                balance: 0,
-                level: 0,
-                period: 'month',
-                transactions: [],
-                dailyBalances: {},
-                isBalanceHidden: false
-            };
-            let state;
+            const SPLASH_DURATION = 2500;
 
-            function load() {
-                try {
-                    const raw = localStorage.getItem(STORAGE_KEY);
-                    state = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultState));
-                    if (!state.dailyBalances) state.dailyBalances = {};
-                    if (state.isBalanceHidden === undefined) state.isBalanceHidden = false;
-                    if (!state.transactions) state.transactions = [];
-                    if (state.level === undefined) state.level = levelFrom(state.balance);
-                } catch (e) {
-                    state = JSON.parse(JSON.stringify(defaultState));
-                }
+            const splashScreen = document.getElementById('splashScreen');
+            const pinScreen = document.getElementById('pinScreen');
+            const mainScreen = document.getElementById('mainScreen');
+            const popupOverlay = document.getElementById('popupOverlay');
+
+            const pinTitle = document.getElementById('pinTitle');
+            const pinSubtitle = document.getElementById('pinSubtitle');
+            const pinDots = document.getElementById('pinDots');
+            const pinError = document.getElementById('pinError');
+            const numpad = document.getElementById('numpad');
+
+            let pinMode = 'create';
+            let firstPin = '';
+            let currentPin = '';
+            let savedPin = '';
+            const PIN_LENGTH = 6;
+
+            function getSavedPin() {
+                return localStorage.getItem('fin_loop_pin') || '';
             }
 
-            function save() {
-                try {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-                } catch (e) {}
-            }
-
-            function levelFrom(b) {
-                return b < 1000000 ? 0 : Math.floor(b / 1000000);
-            }
-
-            function fmt(n) {
-                return 'Rp. ' + n.toLocaleString('id-ID');
-            }
-
-            function today() {
-                return new Date().toISOString().split('T')[0];
-            }
-
-            function now() {
-                const d = new Date();
-                const year = d.getFullYear();
-                const month = String(d.getMonth() + 1).padStart(2, '0');
-                const day = String(d.getDate()).padStart(2, '0');
-                const hours = String(d.getHours()).padStart(2, '0');
-                const minutes = String(d.getMinutes()).padStart(2, '0');
-                return `${year}-${month}-${day}, ${hours}:${minutes}`;
-            }
-
-            function addTx(type, amount, keterangan) {
-                if (state.transactions.length >= MAX_TX) {
-                    state.transactions.shift();
-                }
-
-                let txName;
-                if (keterangan && keterangan.trim() !== '') {
-                    txName = keterangan.trim();
+            setTimeout(() => {
+                splashScreen.classList.add('hidden');
+                savedPin = getSavedPin();
+                if (savedPin && savedPin.length === PIN_LENGTH) {
+                    pinMode = 'verify';
+                    pinTitle.textContent = 'Masukkan PIN';
+                    pinSubtitle.textContent = 'Masukkan PIN 6 digit Anda';
                 } else {
-                    txName = type === 'in' ? 'Pemasukan' : 'Pengeluaran';
+                    pinMode = 'create';
+                    pinTitle.textContent = 'Buat PIN Baru';
+                    pinSubtitle.textContent = 'Masukkan PIN 6 digit, dan pastikan ingat.';
                 }
+                pinScreen.classList.add('active');
+            }, SPLASH_DURATION);
 
-                state.transactions.push({
-                    id: Date.now(),
-                    type,
-                    amount,
-                    date: now(),
-                    name: txName
+            function clearAllDots() {
+                const dots = pinDots.querySelectorAll('.pin-dot');
+                dots.forEach(d => { d.classList.remove('filled', 'error'); });
+            }
+
+            function updatePinDisplay() {
+                const dots = pinDots.querySelectorAll('.pin-dot');
+                dots.forEach((dot, i) => {
+                    if (i < currentPin.length) dot.classList.add('filled');
+                    else dot.classList.remove('filled', 'error');
                 });
-
-                state.balance += type === 'in' ? amount : -amount;
-                if (state.balance < 0) state.balance = 0;
-
-                state.level = levelFrom(state.balance);
-
-                state.dailyBalances[today()] = state.balance;
-
-                save();
-                refreshUI();
-                refreshChart();
             }
 
-            function refreshBalanceDisplay() {
-                const balanceElement = document.getElementById('balanceDisplay');
-                if (state.isBalanceHidden) {
-                    balanceElement.textContent = 'Rp. •••';
-                } else {
-                    balanceElement.textContent = fmt(state.balance);
+            function shakeDots() {
+                const dots = pinDots.querySelectorAll('.pin-dot');
+                dots.forEach(d => { if (d.classList.contains('filled')) d.classList.add('error'); });
+                setTimeout(() => { dots.forEach(d => d.classList.remove('error')); }, 400);
+            }
+
+            function handlePinComplete() {
+                if (pinMode === 'create') {
+                    firstPin = currentPin; currentPin = '';
+                    pinMode = 'confirm';
+                    pinTitle.textContent = 'Ulangi PIN';
+                    pinSubtitle.textContent = 'Masukkan kembali PIN 6 digit, untuk dikonfirmasi.';
+                    pinError.textContent = ''; clearAllDots();
+                } else if (pinMode === 'confirm') {
+                    if (currentPin === firstPin) {
+                        try { localStorage.setItem('fin_loop_pin', currentPin); } catch (e) {}
+                        pinError.textContent = ''; goToMainScreen();
+                    } else {
+                        pinError.textContent = 'PIN tidak cocok, coba lagi';
+                        shakeDots(); currentPin = ''; clearAllDots();
+                    }
+                } else if (pinMode === 'verify') {
+                    if (currentPin === savedPin) {
+                        pinError.textContent = ''; goToMainScreen();
+                    } else {
+                        pinError.textContent = 'PIN salah, coba lagi';
+                        shakeDots(); currentPin = ''; clearAllDots();
+                    }
                 }
             }
 
-            function refreshLevelDisplay() {
-                const levelElement = document.getElementById('levelDisplay');
-                // Level SELALU tampil, tidak bisa disembunyikan
-                levelElement.textContent = 'Lv. ' + state.level;
+            function goToMainScreen() {
+                currentPin = ''; firstPin = ''; clearAllDots();
+                pinScreen.classList.remove('active'); pinScreen.classList.add('hidden');
+                mainScreen.classList.add('active'); initMainApp();
             }
 
-            function setupDoubleTapBalance() {
-                const balanceElement = document.getElementById('balanceDisplay');
-                let lastTap = 0;
-                balanceElement.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const now = Date.now();
-                    if (now - lastTap < 300) {
-                        state.isBalanceHidden = !state.isBalanceHidden;
+            numpad.addEventListener('click', (e) => {
+                const btn = e.target.closest('.numpad-btn');
+                if (!btn) return;
+                const key = btn.dataset.key;
+                if (key === 'delete') {
+                    if (currentPin.length > 0) { currentPin = currentPin.slice(0, -1); updatePinDisplay(); pinError.textContent = ''; }
+                } else if (key !== undefined) {
+                    if (currentPin.length < PIN_LENGTH) {
+                        currentPin += key; updatePinDisplay();
+                        if (currentPin.length === PIN_LENGTH) setTimeout(() => { handlePinComplete(); }, 200);
+                    }
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (!pinScreen.classList.contains('active')) return;
+                if (e.key >= '0' && e.key <= '9') {
+                    if (currentPin.length < PIN_LENGTH) {
+                        currentPin += e.key; updatePinDisplay();
+                        if (currentPin.length === PIN_LENGTH) setTimeout(() => { handlePinComplete(); }, 200);
+                    }
+                } else if (e.key === 'Backspace' || e.key === 'Delete') {
+                    if (currentPin.length > 0) { currentPin = currentPin.slice(0, -1); updatePinDisplay(); pinError.textContent = ''; }
+                }
+            });
+
+            // ==========================================
+            // MAIN APP
+            // ==========================================
+            function initMainApp() {
+                const STORAGE_KEY = 'fin_loop_data';
+                const MONTHLY_KEY = 'fin_loop_monthly';
+                const ACTIVITY_KEY = 'fin_loop_activity';
+                const TX_KEY = 'fin_loop_transactions';
+                const defaultState = {
+                    balance: 0,
+                    period: 'month',
+                    dailyBalances: {},
+                    isBalanceHidden: false,
+                    lastBalance: 0,
+                    lastChangePercent: 0,
+                    lastChangeType: 'neutral'
+                };
+                const defaultMonthly = {
+                    monthStart: '',
+                    totalIncome: 0,
+                    totalExpense: 0
+                };
+                let state;
+                let monthly;
+                let activity = {};
+                let transactions = [];
+
+                function load() {
+                    try {
+                        const raw = localStorage.getItem(STORAGE_KEY);
+                        state = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultState));
+                        if (!state.dailyBalances) state.dailyBalances = {};
+                        if (state.isBalanceHidden === undefined) state.isBalanceHidden = false;
+                        if (state.lastBalance === undefined) state.lastBalance = state.balance;
+                        if (state.lastChangePercent === undefined) state.lastChangePercent = 0;
+                        if (state.lastChangeType === undefined) state.lastChangeType = 'neutral';
+                    } catch (e) { state = JSON.parse(JSON.stringify(defaultState)); }
+
+                    try {
+                        const rawM = localStorage.getItem(MONTHLY_KEY);
+                        monthly = rawM ? JSON.parse(rawM) : JSON.parse(JSON.stringify(defaultMonthly));
+                        if (!monthly.monthStart) monthly.monthStart = '';
+                    } catch (e) { monthly = JSON.parse(JSON.stringify(defaultMonthly)); }
+
+                    try {
+                        const rawA = localStorage.getItem(ACTIVITY_KEY);
+                        activity = rawA ? JSON.parse(rawA) : {};
+                    } catch (e) { activity = {}; }
+
+                    try {
+                        const rawTx = localStorage.getItem(TX_KEY);
+                        transactions = rawTx ? JSON.parse(rawTx) : [];
+                    } catch (e) { transactions = []; }
+
+                    checkMonthlyReset();
+                }
+
+                function save() {
+                    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+                    try { localStorage.setItem(MONTHLY_KEY, JSON.stringify(monthly)); } catch (e) {}
+                    try { localStorage.setItem(ACTIVITY_KEY, JSON.stringify(activity)); } catch (e) {}
+                    try { localStorage.setItem(TX_KEY, JSON.stringify(transactions)); } catch (e) {}
+                }
+
+                function checkMonthlyReset() {
+                    const now = new Date();
+                    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+                    const monthStartStr = monthStart.toISOString().split('T')[0];
+
+                    if (monthly.monthStart !== monthStartStr) {
+                        monthly.monthStart = monthStartStr;
+                        monthly.totalIncome = 0;
+                        monthly.totalExpense = 0;
+                        transactions = transactions.filter(tx => {
+                            const txDate = new Date(tx.date.split(',')[0]);
+                            return txDate >= monthStart;
+                        });
                         save();
-                        refreshBalanceDisplay();
-                        lastTap = 0;
+                    }
+                }
+
+                function fmt(n) { return 'Rp. ' + n.toLocaleString('id-ID'); }
+                function today() { return new Date().toISOString().split('T')[0]; }
+                function now() {
+                    const d = new Date();
+                    const year = d.getFullYear();
+                    const month = String(d.getMonth() + 1).padStart(2, '0');
+                    const day = String(d.getDate()).padStart(2, '0');
+                    const hours = String(d.getHours()).padStart(2, '0');
+                    const minutes = String(d.getMinutes()).padStart(2, '0');
+                    return `${year}-${month}-${day}, ${hours}:${minutes}`;
+                }
+
+                function refreshBalanceDisplay() {
+                    const balanceElement = document.getElementById('balanceDisplay');
+                    const eyeIcon = document.querySelector('#eyeToggle i');
+                    if (state.isBalanceHidden) {
+                        balanceElement.textContent = 'Rp. ••••••';
+                        if (eyeIcon) { eyeIcon.classList.remove('fa-eye'); eyeIcon.classList.add('fa-eye-slash'); }
                     } else {
-                        lastTap = now;
+                        balanceElement.textContent = fmt(state.balance);
+                        if (eyeIcon) { eyeIcon.classList.remove('fa-eye-slash'); eyeIcon.classList.add('fa-eye'); }
                     }
-                });
-            }
-
-            // Fungsi setupDoubleTapLevel DIHAPUS - level tidak bisa di-toggle
-
-            function refreshUI() {
-                refreshBalanceDisplay();
-                refreshLevelDisplay();
-                document.getElementById('limitText').textContent = state.transactions.length + '/' + MAX_TX;
-                const inp = document.getElementById('nominalInput');
-                const ketInp = document.getElementById('keteranganInput');
-                if (inp) {
-                    inp.value = '';
-                    inp.placeholder = 'Rp. 0';
                 }
-                if (ketInp) {
-                    ketInp.value = '';
-                }
-                renderHistory();
-            }
 
-            function renderHistory() {
-                const el = document.getElementById('historyList');
-                if (!el) return;
-                if (!state.transactions.length) {
-                    el.innerHTML = '<div class="history-empty">Belum ada transaksi</div>';
-                    return;
+                function updateDonut() {
+                    const donutWhite = document.getElementById('donutWhite');
+                    const donutGray = document.getElementById('donutGray');
+                    const donutText = document.getElementById('donutText');
+                    if (!donutWhite || !donutGray || !donutText) return;
+
+                    const percent = Math.round(state.lastChangePercent);
+                    const type = state.lastChangeType;
+                    const circumference = 2 * Math.PI * 42;
+
+                    donutText.classList.remove('up', 'down', 'neutral');
+
+                    if (type === 'neutral') {
+                        donutWhite.setAttribute('stroke-dasharray', '0 ' + circumference);
+                        donutWhite.setAttribute('stroke-dashoffset', '0');
+                        donutGray.setAttribute('stroke-dasharray', '0 ' + circumference);
+                        donutGray.setAttribute('stroke-dashoffset', '0');
+                        donutText.classList.add('neutral');
+                        donutText.textContent = '0%';
+                    } else if (type === 'up') {
+                        const whiteLen = (percent / 100) * circumference;
+                        donutWhite.setAttribute('stroke-dasharray', whiteLen + ' ' + circumference);
+                        donutWhite.setAttribute('stroke-dashoffset', '0');
+                        donutGray.setAttribute('stroke-dasharray', '0 ' + circumference);
+                        donutGray.setAttribute('stroke-dashoffset', '0');
+                        donutText.classList.add('up');
+                        donutText.textContent = '↑' + percent + '%';
+                    } else if (type === 'down') {
+                        const grayLen = (percent / 100) * circumference;
+                        const whiteLen = circumference - grayLen;
+                        donutWhite.setAttribute('stroke-dasharray', whiteLen + ' ' + circumference);
+                        donutWhite.setAttribute('stroke-dashoffset', '0');
+                        donutGray.setAttribute('stroke-dasharray', grayLen + ' ' + circumference);
+                        donutGray.setAttribute('stroke-dashoffset', -whiteLen);
+                        donutText.classList.add('down');
+                        donutText.textContent = '↓' + percent + '%';
+                    }
                 }
-                el.innerHTML = [...state.transactions].reverse().map(tx => {
-                    const cls = tx.type === 'in' ? 'in' : 'out';
-                    const arrow = tx.type === 'in' ? 'fa-arrow-up' : 'fa-arrow-down';
-                    const pre = tx.type === 'in' ? '+' : '-';
-                    const amountStr = fmt(tx.amount);
-                    return `<div class="history-item">
-                        <div class="history-left">
-                            <div class="history-icon-circle ${cls}">
-                                <i class="fa-solid ${arrow}"></i>
+
+                function updateMonthlyTotals() {
+                    const totalIncomeEl = document.getElementById('totalIncome');
+                    const totalExpenseEl = document.getElementById('totalExpense');
+                    if (totalIncomeEl) totalIncomeEl.textContent = fmt(monthly.totalIncome);
+                    if (totalExpenseEl) totalExpenseEl.textContent = fmt(monthly.totalExpense);
+                }
+
+                function updateHeatmap() {
+                    const grid = document.getElementById('heatmapGrid');
+                    if (!grid) return;
+
+                    const todayDate = new Date();
+                    let html = '';
+
+                    for (let i = 29; i >= 0; i--) {
+                        const d = new Date(todayDate);
+                        d.setDate(d.getDate() - i);
+                        const dateStr = d.toISOString().split('T')[0];
+                        const count = activity[dateStr] || 0;
+
+                        let level = 0;
+                        if (count >= 4) level = 4;
+                        else if (count >= 3) level = 3;
+                        else if (count >= 2) level = 2;
+                        else if (count >= 1) level = 1;
+
+                        const levelClass = level > 0 ? ' level-' + level : '';
+                        html += `<div class="heatmap-cell${levelClass}" title="${dateStr}: ${count} transaksi"></div>`;
+                    }
+
+                    grid.innerHTML = html;
+                }
+
+                function updateTopTransactions() {
+                    const list = document.getElementById('topTransactionsList');
+                    if (!list) return;
+
+                    const nowDate = new Date();
+                    const monthStart = new Date(nowDate.getFullYear(), nowDate.getMonth(), 1);
+                    const thisMonthTx = transactions.filter(tx => {
+                        const txDate = new Date(tx.date.split(',')[0]);
+                        return txDate >= monthStart;
+                    });
+
+                    if (thisMonthTx.length === 0) {
+                        list.innerHTML = '<div class="top-tx-empty">Belum ada transaksi</div>';
+                        return;
+                    }
+
+                    const sorted = [...thisMonthTx].sort((a, b) => b.amount - a.amount);
+                    const top3 = sorted.slice(0, 3);
+
+                    list.innerHTML = top3.map(tx => {
+                        const cls = tx.type === 'in' ? 'in' : 'out';
+                        const arrow = tx.type === 'in' ? 'fa-arrow-up' : 'fa-arrow-down';
+                        const pre = tx.type === 'in' ? '+' : '-';
+                        const name = tx.name || (tx.type === 'in' ? 'Pemasukan' : 'Pengeluaran');
+                        const amountStr = fmt(tx.amount);
+                        return `<div class="top-tx-item">
+                            <div class="top-tx-left">
+                                <div class="top-tx-icon ${cls}">
+                                    <i class="fa-solid ${arrow}"></i>
+                                </div>
+                                <span class="top-tx-name">${name}</span>
                             </div>
-                            <div class="history-info">
-                                <span class="history-name">${tx.name}</span>
-                                <span class="history-date">${tx.date}</span>
-                            </div>
-                        </div>
-                        <span class="history-amount ${cls}">${pre} ${amountStr}</span>
-                    </div>`;
-                }).join('');
-            }
+                            <span class="top-tx-amount ${cls}">${pre} ${amountStr}</span>
+                        </div>`;
+                    }).join('');
+                }
 
-            let chart;
-
-            function refreshChart() {
-                const canvas = document.getElementById('chartCanvas');
-                if (!canvas) return;
-                const ctx = canvas.getContext('2d');
-                const data = buildChartData(state.period);
-                if (chart) chart.destroy();
-                const g = ctx.createLinearGradient(0, 0, 0, 300);
-                g.addColorStop(0, 'rgba(255,255,255,0.18)');
-                g.addColorStop(0.4, 'rgba(255,255,255,0.05)');
-                g.addColorStop(1, 'rgba(255,255,255,0)');
-
-                const maxVal = Math.max(...data.values, 50000);
-                const minVal = Math.min(...data.values, 0);
-
-                chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: data.labels,
-                        datasets: [{
-                            data: data.values,
-                            borderColor: '#fff',
-                            backgroundColor: g,
-                            borderWidth: 1.6,
-                            tension: 0.35,
-                            pointRadius: (context) => {
-                                if (context.dataIndex === context.dataset.data.length - 1) return 3;
-                                return 0;
-                            },
-                            pointBackgroundColor: '#fff',
-                            pointBorderColor: '#fff',
-                            pointBorderWidth: 2,
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        animation: { duration: 250 },
-                        plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                        scales: {
-                            x: { display: false, grid: { display: false }, ticks: { display: false }, border: { display: false } },
-                            y: { display: false, grid: { display: false }, ticks: { display: false }, border: { display: false },
-                                min: Math.max(0, minVal - 50000),
-                                max: maxVal + 50000
-                            }
-                        },
-                        layout: { padding: { top: 6, right: 6, bottom: 6, left: 6 } }
-                    }
-                });
-            }
-
-            function buildChartData(period) {
-                const db = state.dailyBalances || {};
-                const t = today();
-                const dates = Object.keys(db).sort();
-                let labels = [],
-                    vals = [];
-                const td = new Date(t);
-
-                if (period === 'week') {
-                    const s = new Date(td);
-                    s.setDate(s.getDate() - 6);
-                    for (let d = new Date(s); d <= td; d.setDate(d.getDate() + 1)) {
-                        const ds = d.toISOString().split('T')[0];
-                        labels.push(ds.slice(5));
-                        vals.push(db[ds] !== undefined ? db[ds] : null);
-                    }
-                } else if (period === 'month') {
-                    const s = new Date(td);
-                    s.setDate(s.getDate() - 29);
-                    for (let d = new Date(s); d <= td; d.setDate(d.getDate() + 1)) {
-                        const ds = d.toISOString().split('T')[0];
-                        labels.push(ds.slice(5));
-                        vals.push(db[ds] !== undefined ? db[ds] : null);
-                    }
-                } else {
-                    for (let i = 11; i >= 0; i--) {
-                        const d = new Date(td.getFullYear(), td.getMonth() - i, 1);
-                        const mk = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
-                        const md = dates.filter(x => x.startsWith(mk));
-                        labels.push(mk.slice(5));
-                        vals.push(md.length ? db[md[md.length - 1]] : null);
+                function calculateChange(type, amount) {
+                    const prevBalance = state.lastBalance;
+                    
+                    if (prevBalance === 0 && type === 'in') {
+                        state.lastChangePercent = 100;
+                        state.lastChangeType = 'up';
+                    } else if (prevBalance === 0 && type === 'out') {
+                        state.lastChangePercent = 0;
+                        state.lastChangeType = 'neutral';
+                    } else if (prevBalance > 0) {
+                        const percent = (amount / prevBalance) * 100;
+                        state.lastChangePercent = Math.min(percent, 100);
+                        state.lastChangeType = type === 'in' ? 'up' : 'down';
                     }
                 }
 
-                let last = 0;
-                for (let i = 0; i < vals.length; i++) {
-                    if (vals[i] === null || vals[i] === undefined) {
-                        vals[i] = last;
+                function addTx(type, amount, keterangan) {
+                    calculateChange(type, amount);
+
+                    state.lastBalance = state.balance;
+                    state.balance += type === 'in' ? amount : -amount;
+                    if (state.balance < 0) state.balance = 0;
+
+                    const t = today();
+                    state.dailyBalances[t] = state.balance;
+
+                    activity[t] = (activity[t] || 0) + 1;
+
+                    checkMonthlyReset();
+                    if (type === 'in') {
+                        monthly.totalIncome += amount;
                     } else {
-                        last = vals[i];
+                        monthly.totalExpense += amount;
                     }
-                }
-                return { labels, values: vals };
-            }
 
-            const inp = document.getElementById('nominalInput');
-            if (inp) {
-                inp.addEventListener('focus', () => {
-                    if (inp.value === '' || inp.value === 'Rp. 0') inp.value = '';
-                });
-                inp.addEventListener('blur', () => {
-                    if (inp.value.replace(/[^0-9]/g, '') === '') inp.value = '';
-                });
-                inp.addEventListener('input', () => {
-                    let r = inp.value.replace(/[^0-9]/g, '');
-                    if (!r) { inp.value = ''; return; }
-                    r = r.replace(/^0+/, '') || '0';
-                    inp.value = 'Rp. ' + parseInt(r).toLocaleString('id-ID');
-                });
-                inp.addEventListener('keydown', e => {
-                    const ok = [8, 46, 9, 27, 13, 37, 38, 39, 40];
-                    if (ok.includes(e.keyCode)) return;
-                    if ((e.ctrlKey || e.metaKey) && [65, 67, 86, 88].includes(e.keyCode)) return;
-                    if ((e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105)) e.preventDefault();
-                });
-                inp.addEventListener('paste', e => {
-                    e.preventDefault();
-                    const r = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
-                    if (r) inp.value = 'Rp. ' + parseInt(r.replace(/^0+/, '') || '0').toLocaleString('id-ID');
-                });
-            }
+                    let txName;
+                    if (keterangan && keterangan.trim() !== '') {
+                        txName = keterangan.trim();
+                    } else {
+                        txName = type === 'in' ? 'Pemasukan' : 'Pengeluaran';
+                    }
+                    transactions.push({
+                        id: Date.now(),
+                        type,
+                        amount,
+                        date: now(),
+                        name: txName
+                    });
 
-            function getAmount() {
-                if (!inp) return 0;
-                const r = inp.value.replace(/[^0-9]/g, '');
-                return parseInt(r) || 0;
-            }
+                    if (transactions.length > 50) {
+                        transactions = transactions.slice(-50);
+                    }
 
-            function getKeterangan() {
-                const ketInp = document.getElementById('keteranganInput');
-                if (!ketInp) return '';
-                return ketInp.value.trim();
-            }
-
-            function resetInput() {
-                if (inp) {
-                    inp.value = '';
-                    inp.placeholder = 'Rp. 0';
-                }
-                const ketInp = document.getElementById('keteranganInput');
-                if (ketInp) {
-                    ketInp.value = '';
-                }
-            }
-
-            const btnDeposit = document.getElementById('btnDeposit');
-            const btnTarik = document.getElementById('btnTarik');
-
-            if (btnDeposit) {
-                btnDeposit.addEventListener('click', () => {
-                    const a = getAmount();
-                    if (!a || a <= 0) { resetInput(); return; }
-                    const keterangan = getKeterangan();
-                    addTx('in', a, keterangan);
-                });
-            }
-
-            if (btnTarik) {
-                btnTarik.addEventListener('click', () => {
-                    const a = getAmount();
-                    if (!a || a <= 0 || a > state.balance) { resetInput(); return; }
-                    const keterangan = getKeterangan();
-                    addTx('out', a, keterangan);
-                });
-            }
-
-            const periodBtns = document.querySelectorAll('.period-btn');
-            periodBtns.forEach(b => {
-                b.addEventListener('click', () => {
-                    periodBtns.forEach(x => x.classList.remove('active'));
-                    b.classList.add('active');
-                    state.period = b.dataset.period;
                     save();
+                    refreshUI();
                     refreshChart();
+                }
+
+                function refreshUI() {
+                    refreshBalanceDisplay();
+                    updateDonut();
+                    updateMonthlyTotals();
+                    updateHeatmap();
+                    updateTopTransactions();
+                }
+
+                // ========== POP-UP ==========
+                const popupNominal = document.getElementById('popupNominal');
+                const popupKeterangan = document.getElementById('popupKeterangan');
+                const popupIncome = document.getElementById('popupIncome');
+                const popupExpense = document.getElementById('popupExpense');
+
+                function openPopup() {
+                    popupOverlay.classList.add('active');
+                    if (popupNominal) {
+                        popupNominal.value = '';
+                        popupNominal.placeholder = 'Rp. 0';
+                    }
+                    if (popupKeterangan) {
+                        popupKeterangan.value = '';
+                    }
+                    setTimeout(() => {
+                        if (popupNominal) popupNominal.focus();
+                    }, 300);
+                }
+
+                function closePopup() {
+                    popupOverlay.classList.remove('active');
+                }
+
+                function getPopupAmount() {
+                    if (!popupNominal) return 0;
+                    const r = popupNominal.value.replace(/[^0-9]/g, '');
+                    return parseInt(r) || 0;
+                }
+
+                function getPopupKeterangan() {
+                    if (!popupKeterangan) return '';
+                    return popupKeterangan.value.trim();
+                }
+
+                function resetPopup() {
+                    if (popupNominal) {
+                        popupNominal.value = '';
+                        popupNominal.placeholder = 'Rp. 0';
+                    }
+                    if (popupKeterangan) {
+                        popupKeterangan.value = '';
+                    }
+                }
+
+                if (popupNominal) {
+                    popupNominal.addEventListener('focus', () => {
+                        if (popupNominal.value === '' || popupNominal.value === 'Rp. 0') popupNominal.value = '';
+                    });
+                    popupNominal.addEventListener('blur', () => {
+                        if (popupNominal.value.replace(/[^0-9]/g, '') === '') popupNominal.value = '';
+                    });
+                    popupNominal.addEventListener('input', () => {
+                        let r = popupNominal.value.replace(/[^0-9]/g, '');
+                        if (!r) { popupNominal.value = ''; return; }
+                        r = r.replace(/^0+/, '') || '0';
+                        popupNominal.value = 'Rp. ' + parseInt(r).toLocaleString('id-ID');
+                    });
+                    popupNominal.addEventListener('keydown', e => {
+                        const ok = [8, 46, 9, 27, 13, 37, 38, 39, 40];
+                        if (ok.includes(e.keyCode)) return;
+                        if ((e.ctrlKey || e.metaKey) && [65, 67, 86, 88].includes(e.keyCode)) return;
+                        if ((e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105)) e.preventDefault();
+                    });
+                    popupNominal.addEventListener('paste', e => {
+                        e.preventDefault();
+                        const r = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+                        if (r) popupNominal.value = 'Rp. ' + parseInt(r.replace(/^0+/, '') || '0').toLocaleString('id-ID');
+                    });
+                }
+
+                if (popupIncome) {
+                    popupIncome.addEventListener('click', () => {
+                        const amount = getPopupAmount();
+                        if (!amount || amount <= 0) { resetPopup(); return; }
+                        const keterangan = getPopupKeterangan();
+                        addTx('in', amount, keterangan);
+                        resetPopup();
+                        closePopup();
+                    });
+                }
+
+                if (popupExpense) {
+                    popupExpense.addEventListener('click', () => {
+                        const amount = getPopupAmount();
+                        if (!amount || amount <= 0 || amount > state.balance) { 
+                            if (amount > state.balance) alert('Saldo tidak cukup!');
+                            resetPopup(); 
+                            return; 
+                        }
+                        const keterangan = getPopupKeterangan();
+                        addTx('out', amount, keterangan);
+                        resetPopup();
+                        closePopup();
+                    });
+                }
+
+                popupOverlay.addEventListener('click', (e) => {
+                    if (e.target === popupOverlay) {
+                        closePopup();
+                    }
                 });
-            });
 
-            load();
-            refreshUI();
-            refreshChart();
+                const eyeToggle = document.getElementById('eyeToggle');
+                if (eyeToggle) {
+                    eyeToggle.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        state.isBalanceHidden = !state.isBalanceHidden;
+                        save(); refreshBalanceDisplay();
+                    });
+                }
 
-            setupDoubleTapBalance();
-            // setupDoubleTapLevel DIHAPUS - level tidak bisa disembunyikan
+                // Hamburger nonaktif
+                const hamburgerBtn = document.getElementById('hamburgerBtn');
+                if (hamburgerBtn) {
+                    hamburgerBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                    });
+                }
 
-            periodBtns.forEach(b => {
-                if (b.dataset.period === state.period) b.classList.add('active');
-                else b.classList.remove('active');
-            });
+                let chart;
+                function refreshChart() {
+                    const canvas = document.getElementById('chartCanvas');
+                    if (!canvas) return;
+                    const ctx = canvas.getContext('2d');
+                    const data = buildChartData(state.period);
+                    if (chart) chart.destroy();
+                    const g = ctx.createLinearGradient(0, 0, 0, 300);
+                    g.addColorStop(0, 'rgba(255,255,255,0.18)');
+                    g.addColorStop(0.4, 'rgba(255,255,255,0.05)');
+                    g.addColorStop(1, 'rgba(255,255,255,0)');
+                    const maxVal = Math.max(...data.values, 50000);
+                    const minVal = Math.min(...data.values, 0);
+                    chart = new Chart(ctx, {
+                        type: 'line',
+                        data: { labels: data.labels, datasets: [{ data: data.values, borderColor: '#fff', backgroundColor: g, borderWidth: 1.6, tension: 0.35, pointRadius: (ctx) => ctx.dataIndex === ctx.dataset.data.length - 1 ? 3 : 0, pointBackgroundColor: '#fff', pointBorderColor: '#fff', pointBorderWidth: 2, fill: true }] },
+                        options: { responsive: true, maintainAspectRatio: false, animation: { duration: 250 }, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: false }, y: { display: false, min: Math.max(0, minVal - 50000), max: maxVal + 50000 } }, layout: { padding: { top: 6, right: 6, bottom: 6, left: 6 } } }
+                    });
+                }
+
+                function buildChartData(period) {
+                    const db = state.dailyBalances || {};
+                    const t = today();
+                    const dates = Object.keys(db).sort();
+                    let labels = [], vals = [];
+                    const td = new Date(t);
+                    if (period === 'week') {
+                        const s = new Date(td); s.setDate(s.getDate() - 6);
+                        for (let d = new Date(s); d <= td; d.setDate(d.getDate() + 1)) {
+                            const ds = d.toISOString().split('T')[0];
+                            labels.push(ds.slice(5)); vals.push(db[ds] !== undefined ? db[ds] : null);
+                        }
+                    } else if (period === 'month') {
+                        const s = new Date(td); s.setDate(s.getDate() - 29);
+                        for (let d = new Date(s); d <= td; d.setDate(d.getDate() + 1)) {
+                            const ds = d.toISOString().split('T')[0];
+                            labels.push(ds.slice(5)); vals.push(db[ds] !== undefined ? db[ds] : null);
+                        }
+                    } else {
+                        for (let i = 11; i >= 0; i--) {
+                            const d = new Date(td.getFullYear(), td.getMonth() - i, 1);
+                            const mk = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+                            const md = dates.filter(x => x.startsWith(mk));
+                            labels.push(mk.slice(5)); vals.push(md.length ? db[md[md.length - 1]] : null);
+                        }
+                    }
+                    let last = 0;
+                    for (let i = 0; i < vals.length; i++) {
+                        if (vals[i] === null || vals[i] === undefined) vals[i] = last;
+                        else last = vals[i];
+                    }
+                    return { labels, values: vals };
+                }
+
+                const periodBtns = document.querySelectorAll('.period-btn');
+                periodBtns.forEach(b => {
+                    b.addEventListener('click', () => {
+                        periodBtns.forEach(x => x.classList.remove('active'));
+                        b.classList.add('active');
+                        state.period = b.dataset.period;
+                        save(); refreshChart();
+                    });
+                });
+
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        if (!item.classList.contains('nav-add')) {
+                            navItems.forEach(x => x.classList.remove('active'));
+                            item.classList.add('active');
+                        }
+                        const nav = item.dataset.nav;
+                        if (nav === 'home') {
+                            navItems.forEach(x => x.classList.remove('active'));
+                            item.classList.add('active');
+                            const scrollable = document.getElementById('scrollableContent');
+                            if (scrollable) scrollable.scrollTo({ top: 0, behavior: 'smooth' });
+                        } else if (nav === 'add') {
+                            openPopup();
+                        }
+                        // Selain home & add: tidak merespon apa-apa (coming soon)
+                    });
+                });
+
+                load(); refreshUI(); refreshChart();
+                periodBtns.forEach(b => {
+                    if (b.dataset.period === state.period) b.classList.add('active');
+                    else b.classList.remove('active');
+                });
+            }
+
         })();
     </script>
 </body>
